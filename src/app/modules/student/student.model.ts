@@ -9,7 +9,8 @@ import {
 } from './student.interface'
 import { string } from 'zod'
 import bcrypt from 'bcrypt'
-import config from '../config'
+// import config from '../config'
+import config from '../../config'
 
 // creating Schema
 const userNameSchema = new Schema<TUserName>({
