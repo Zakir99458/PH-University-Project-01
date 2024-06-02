@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { StudentServices } from './student.service'
 import studentValidationSchema from './student.validation'
-import { error } from 'console'
+// import { error } from 'console'
 
 const createStudent = async (req: Request, res: Response) => {
   try {
