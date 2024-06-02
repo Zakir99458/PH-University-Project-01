@@ -1,8 +1,12 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { StudentServices } from './student.service'
 // import { error } from 'console'
 
-const getAllStudents = async (req: Request, res: Response) => {
+const getAllStudents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const result = await StudentServices.getAllStudentsFromDB()
 
@@ -11,16 +15,16 @@ const getAllStudents = async (req: Request, res: Response) => {
       message: 'Student retrievd successfully',
       date: result,
     })
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong',
-      error: err,
-    })
+  } catch (err) {
+    next(err)
   }
 }
 
-const getSinglStudents = async (req: Request, res: Response) => {
+const getSinglStudents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { studentId } = req.params
 
@@ -31,16 +35,16 @@ const getSinglStudents = async (req: Request, res: Response) => {
       message: 'Student retrievd successfully',
       date: result,
     })
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong',
-      error: err,
-    })
+  } catch (err) {
+    next(err)
   }
 }
 
-const deleteStudents = async (req: Request, res: Response) => {
+const deleteStudents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { studentId } = req.params
 
@@ -51,17 +55,12 @@ const deleteStudents = async (req: Request, res: Response) => {
       message: 'Student deleted successfully',
       date: result,
     })
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong',
-      error: err,
-    })
+  } catch (err) {
+    next(err)
   }
 }
 
 export const StudentController = {
-  createStudent,
   getAllStudents,
   getSinglStudents,
   deleteStudents,

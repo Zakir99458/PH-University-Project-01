@@ -7,11 +7,6 @@ import {
   TStudentModel,
   TUserName,
 } from './student.interface'
-// import { string } from 'zod'
-import bcrypt from 'bcrypt'
-// import config from '../config'
-import config from '../../config'
-
 // creating Schema
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -76,9 +71,11 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 const studentSchema = new Schema<TStudent, TStudentModel, TStudentMethods>(
   {
     id: { type: String },
-    password: {
-      type: String,
-      required: [true, 'Password is required...'],
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User Id is required...'],
+      unique: true,
+      ref: 'User',
     },
     name: {
       type: userNameSchema,
@@ -103,56 +100,23 @@ const studentSchema = new Schema<TStudent, TStudentModel, TStudentMethods>(
     guardian: guardianSchema,
     localGuardian: localGuardianSchema,
     profileImage: { type: String },
-    isActive: {
-      type: String,
-      enum: ['active', 'blocked'], // Correctly define enum
-      required: true,
-      default: 'active',
-    },
     isDeleted: {
       type: Boolean,
       default: false,
     },
   },
+
   {
     toJSON: {
       virtuals: true,
     },
+    timestamps: true,
   },
 )
 
 //  Virtul: to show full name to the user but it is not exist in the data base
 studentSchema.virtual('fullName').get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
-})
-
-// Pre and Post Middleware
-studentSchema.pre('save', async function (next) {
-  // console.log(this, 'We are going to save the data...')
-  const user = this
-  // use bcrypt to has the password
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_round),
-  )
-  next()
-})
-
-//  Here doc is the current document and next calling the next middleware
-studentSchema.post('save', function (doc, next) {
-  console.log(this.password, '...Data saved....')
-
-  next()
-})
-
-studentSchema.post('save', function (doc, next) {
-  console.log(
-    this.password,
-    '...Data saved....but will not send password field to the client side..',
-  )
-
-  doc.password = ''
-  next()
 })
 
 // Query Middleware

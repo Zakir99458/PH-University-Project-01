@@ -1,28 +1,30 @@
-import { object } from 'zod'
 import config from '../../config'
 import { TStudent } from '../student/student.interface'
-import { NewUser } from './user.interface'
+import { Student } from '../student/student.model'
+import { TUser } from './user.interface'
 import { User } from './user.model'
 
 const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   //   if (await student.isUserExists(studentData.id)) {
   //     throw new Error('User already exists')
   //   }
-  const user: NewUser = {}
+  const userData: Partial<TUser> = {}
   // Checking: if password is not given
-  user.password = password || (config.default_password as string)
+  userData.password = password || (config.default_password as string)
   // Set the role
-  user.role = 'student'
+  userData.role = 'student'
   // Set ID for student, embedded
-  user.id = '2030100001'
+  userData.id = '2030100001'
   // create user
-  const result = await User.create(user)
+  const newUser = await User.create(userData)
+
   // create student
-  if (Object.keys(result).length) {
-    studentData.id = result.id
-    studentData.user = result._id
+  if (Object.keys(newUser).length) {
+    studentData.id = newUser.id // embedding ID
+    studentData.user = newUser._id // Reference ID
+    const newStudent = Student.create(studentData)
+    return newStudent
   }
-  return result
 }
 
 export const UserServices = {

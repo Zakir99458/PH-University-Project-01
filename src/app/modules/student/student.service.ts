@@ -1,4 +1,3 @@
-import { TStudent } from './student.interface'
 import { Student } from './student.model'
 
 const getAllStudentsFromDB = async () => {
@@ -17,7 +16,6 @@ const deleteStudentFromDB = async (id: string) => {
 }
 
 export const StudentServices = {
-  createStudentIntoDB,
   getAllStudentsFromDB,
   getSingleStudentsFromDB,
   deleteStudentFromDB,
