@@ -9,6 +9,7 @@ import { StudentRoute } from './app/modules/student/student.route'
 import { UserRoute } from './app/modules/user/user.route'
 import { error } from 'console'
 import globalErrorHandler from './app/middlewares/globalErrorHandlers'
+import notFoundRoute from './app/middlewares/notFound'
 
 const app: Application = express()
 
@@ -23,6 +24,10 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!')
 })
 
+// Global Error Handler Middlewares
 app.use(globalErrorHandler)
+
+// Not Found Route
+app.use(notFoundRoute)
 
 export default app
