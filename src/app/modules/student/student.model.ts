@@ -7,7 +7,7 @@ import {
   TStudentModel,
   TUserName,
 } from './student.interface'
-import { string } from 'zod'
+// import { string } from 'zod'
 import bcrypt from 'bcrypt'
 // import config from '../config'
 import config from '../../config'
