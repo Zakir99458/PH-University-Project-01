@@ -10,7 +10,7 @@ import { UserRoute } from './app/modules/user/user.route'
 import { error } from 'console'
 import globalErrorHandler from './app/middlewares/globalErrorHandlers'
 import notFoundRoute from './app/middlewares/notFound'
-import routes from './app/routes/routes'
+import routes from './app/routes'
 
 const app: Application = express()
 
