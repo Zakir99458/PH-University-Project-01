@@ -1,15 +1,9 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { StudentServices } from './student.service'
 import sendResponse from '../../utils/sendResponse'
 import httpStatus from 'http-status'
-// import { error } from 'console'
+import catchAync from '../../utils/catchAsync'
 
-const catchAync = (fn: RequestHandler) => {
-  return (req: Request, res: Response, next: NextFunction) =>
-    Promise.resolve(fn(req, res, next)).catch((err) => next(err))
-}
-
-const getAllStudents = catchAync(async (req, res, next) => {
+const getAllStudents = catchAync(async (req, res) => {
   const result = await StudentServices.getAllStudentsFromDB()
 
   res.status(200).json({
@@ -19,7 +13,7 @@ const getAllStudents = catchAync(async (req, res, next) => {
   })
 })
 
-const getSinglStudents = catchAync(async (req, res, next) => {
+const getSinglStudents = catchAync(async (req, res) => {
   const { studentId } = req.params
 
   const result = await StudentServices.getSingleStudentsFromDB(studentId)
@@ -31,7 +25,7 @@ const getSinglStudents = catchAync(async (req, res, next) => {
   })
 })
 
-const deleteStudents: RequestHandler = catchAync(async (req, res, next) => {
+const deleteStudents = catchAync(async (req, res) => {
   const { studentId } = req.params
 
   const result = await StudentServices.deleteStudentFromDB(studentId)
