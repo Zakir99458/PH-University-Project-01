@@ -1,4 +1,3 @@
-import { UserServices } from './user.service'
 import sendResponse from '../../utils/sendResponse'
 import httpStatus from 'http-status'
 import catchAync from '../../utils/catchAsync'
