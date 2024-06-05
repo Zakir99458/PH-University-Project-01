@@ -1,10 +1,10 @@
 import config from '../../config'
 import { AcademicSemester } from '../academicSemester/academiSemester.model'
-import { TAcademicSemester } from '../academicSemester/academicSemester.interface'
 import { TStudent } from '../student/student.interface'
 import { Student } from '../student/student.model'
 import { TUser } from './user.interface'
 import { User } from './user.model'
+import { generateStudentId } from './user.utils'
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
   //   if (await student.isUserExists(studentData.id)) {
@@ -16,16 +16,14 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // Set the role
   userData.role = 'student'
 
-  // Create student id: Semester year + term + 4 digit number
-  const generateStudentId = (payload: TAcademicSemester) => {}
-
+  //  For Generate ID
   // find academic semester info
   const admissionSemester = await AcademicSemester.findById(
     payload.admissionSemester,
   )
 
   // Set ID for student, embedded
-  userData.id = generateStudentId(admissionSemester)
+  userData.id = await generateStudentId(admissionSemester)
   // create user
   const newUser = await User.create(userData)
 
