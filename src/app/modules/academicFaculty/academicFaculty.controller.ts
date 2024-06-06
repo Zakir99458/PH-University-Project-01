@@ -53,7 +53,7 @@ const updateAcademicFaculty = catchAync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Academic Semester is updated successfully',
+    message: 'Academic Faculty is updated successfully',
     data: result,
   })
 })
