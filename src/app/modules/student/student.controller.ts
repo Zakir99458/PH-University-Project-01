@@ -25,6 +25,20 @@ const getSinglStudents = catchAync(async (req, res) => {
   })
 })
 
+const updateStudents = catchAync(async (req, res) => {
+  const { studentId } = req.params
+  const { student } = req.body
+
+  const result = await StudentServices.updateStudentsIntoDB(studentId, student)
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student updated successfully',
+    data: result,
+  })
+})
+
 const deleteStudents = catchAync(async (req, res) => {
   const { studentId } = req.params
 
@@ -42,4 +56,5 @@ export const StudentController = {
   getAllStudents,
   getSinglStudents,
   deleteStudents,
+  updateStudents,
 }
