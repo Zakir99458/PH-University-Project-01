@@ -17,7 +17,7 @@ const createAcademicDepartment = catchAync(async (req, res) => {
   })
 })
 
-const getAllAcademicFaculty = catchAync(async (req, res) => {
+const getAllAcademicDepartment = catchAync(async (req, res) => {
   const result =
     await AcademicDepartmentServices.getAllAcademicDepartmentFromDB()
 
@@ -28,7 +28,7 @@ const getAllAcademicFaculty = catchAync(async (req, res) => {
     data: result,
   })
 })
-const getSingleAcademicFaculty = catchAync(async (req, res) => {
+const getSingleAcademicDepartment = catchAync(async (req, res) => {
   const { departmentsId } = req.params
 
   const result =
@@ -44,12 +44,13 @@ const getSingleAcademicFaculty = catchAync(async (req, res) => {
   })
 })
 
-const updateAcademicFaculty = catchAync(async (req, res) => {
-  const { departmentsId } = req.params
+const updateAcademicDepartment = catchAync(async (req, res) => {
+  //   console.log(req.params)
+  const { deoartmentId } = req.params
 
   const result =
     await AcademicDepartmentServices.updateAcademicDepartmentIntoDB(
-      departmentsId,
+      deoartmentId,
       req.body,
     )
 
@@ -63,7 +64,7 @@ const updateAcademicFaculty = catchAync(async (req, res) => {
 
 export const AcademicDepartmentControllers = {
   createAcademicDepartment,
-  getAllAcademicFaculty,
-  getSingleAcademicFaculty,
-  updateAcademicFaculty,
+  getAllAcademicDepartment,
+  getSingleAcademicDepartment,
+  updateAcademicDepartment,
 }
