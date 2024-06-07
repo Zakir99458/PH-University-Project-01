@@ -6,10 +6,10 @@ import { AcademicDepartmentControllers } from './academicDepartment.controllers'
 const router = express.Router()
 
 router.post(
-  '/create-academic-faculty',
-  validateRequest(
-    AcademicDepartmentValidation.createAcademicDepartmentValidationSchema,
-  ),
+  '/create-academic-department',
+  // validateRequest(
+  //   AcademicDepartmentValidation.createAcademicDepartmentValidationSchema,
+  // ),
   AcademicDepartmentControllers.createAcademicDepartment,
 )
 
