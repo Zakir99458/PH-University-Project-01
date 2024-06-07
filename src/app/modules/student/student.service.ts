@@ -12,11 +12,34 @@ const getAllStudentsFromDB = async () => {
 
 const getSingleStudentsFromDB = async (id: string) => {
   const result = await Student.findOne({ id })
+
   return result
 }
 
 const updateStudentsIntoDB = async (id: string, payload: Partial<TStudent>) => {
-  const result = await Student.findOneAndUpdate({ id }, payload)
+  const { name, guardian, ...remainingStudentData } = payload
+
+  const modifiedUpdateData: Record<string, unknown> = {
+    ...remainingStudentData,
+  }
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdateData[`name.${key}`] = value
+    }
+  }
+  if (guardian && Object.keys(guardian).length) {
+    for (const [key, value] of Object.entries(guardian)) {
+      modifiedUpdateData[`guardian.${key}`] = value
+    }
+  }
+  // if(email){
+  //   modifiedUpdateData[`ema`]
+  // }
+  console.log(modifiedUpdateData)
+  const result = await Student.findOneAndUpdate({ id }, modifiedUpdateData, {
+    new: true,
+    runValidators: true,
+  })
   return result
 }
 
