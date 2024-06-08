@@ -1,25 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import httpStatus from 'http-status'
 import mongoose from 'mongoose'
 import config from '../../config'
-import { AcademicSemester } from '../academicSemester/academiSemester.model'
 import { TStudent } from '../student/student.interface'
 import { Student } from '../student/student.model'
 import { TUser } from './user.interface'
 import { User } from './user.model'
 import { generateStudentId } from './user.utils'
 import AppError from '../../errors/AppErrors'
-import httpStatus from 'http-status'
+import { AcademicSemester } from '../academicSemester/academiSemester.model'
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
-  //   if (await student.isUserExists(studentData.id)) {
-  //     throw new Error('User already exists')
-  //   }
+  // create a user object
   const userData: Partial<TUser> = {}
-  // Checking: if password is not given
+
+  //if password is not given , use deafult password
   userData.password = password || (config.default_password as string)
-  // Set the role
+
+  //set student role
   userData.role = 'student'
 
-  //  For Generate ID
   // find academic semester info
   const admissionSemester = await AcademicSemester.findById(
     payload.admissionSemester,
@@ -28,31 +28,37 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   const session = await mongoose.startSession()
 
   try {
-    ;(await session).startTransaction()
-    // Set ID for student, embedded
+    session.startTransaction()
+    //set  generated id
     userData.id = await generateStudentId(admissionSemester)
-    // create user
-    const newUser = await User.create([userData], { session })
 
-    // create student
+    // create a user (transaction-1)
+    const newUser = await User.create([userData], { session }) // array
+
+    //create a student
     if (!newUser.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Unable to create new user!')
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user')
     }
-    payload.id = newUser[0].id // embedding ID
-    payload.user = newUser[0]._id // Reference ID
-    const newStudent = Student.create([payload], { session })
-    if (!(await newStudent).length) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Unable to create new student')
+    // set id , _id as user
+    payload.id = newUser[0].id
+    payload.user = newUser[0]._id //reference _id
+
+    // create a student (transaction-2)
+
+    const newStudent = await Student.create([payload], { session })
+
+    if (!newStudent.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student')
     }
 
-    ;(await session).commitTransaction()
-    ;(await session).endSession()
+    await session.commitTransaction()
+    await session.endSession()
 
     return newStudent
-  } catch (err) {
-    ;(await session).abortTransaction()
-    ;(await session).endSession()
-    throw new AppError(httpStatus.BAD_REQUEST, 'Unable Do the Transaction')
+  } catch (err: any) {
+    await session.abortTransaction()
+    await session.endSession()
+    throw new Error(err)
   }
 }
 

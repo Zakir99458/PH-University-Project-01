@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from 'mongoose'
+import mongoose from 'mongoose'
 import { TErrorSrource } from '../interface/error'
 
 const handleValidationError = (err: mongoose.Error.ValidationError) => {

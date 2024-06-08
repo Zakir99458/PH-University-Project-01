@@ -120,7 +120,7 @@ const studentSchema = new Schema<TStudent, TStudentModel, TStudentMethods>(
 
 //  Virtul: to show full name to the user but it is not exist in the data base
 studentSchema.virtual('fullName').get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
+  return `${this.name?.firstName} ${this.name?.middleName} ${this.name?.lastName}`
 })
 
 // Query Middleware

@@ -5,9 +5,6 @@
 // const express = require('express')
 import express, { Application, NextFunction, Request, Response } from 'express'
 import cors from 'cors'
-import { StudentRoute } from './app/modules/student/student.route'
-import { UserRoute } from './app/modules/user/user.route'
-import { error } from 'console'
 import globalErrorHandler from './app/middlewares/globalErrorHandlers'
 import notFoundRoute from './app/middlewares/notFound'
 import routes from './app/routes'
@@ -17,13 +14,14 @@ const app: Application = express()
 app.use(express.json())
 app.use(cors())
 
+// For testing purpose
+// const test = async (req: Request, res: Response) => {
+//   // Promise.reject()
+//   // res.send('Hello World!')
+// }
+// app.get('/', test)
 // Application routes
 app.use('/api/v1', routes)
-
-// For testing purpose
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!')
-})
 
 // Global Error Handler Middlewares
 app.use(globalErrorHandler)

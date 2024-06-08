@@ -5,7 +5,7 @@ import catchAync from '../../utils/catchAsync'
 
 const createStudent = catchAync(async (req, res) => {
   const { password, student: studentData } = req.body
-
+  // console.log(studentData)
   const result = await UserServices.createStudentIntoDB(password, studentData)
 
   sendResponse(res, {
