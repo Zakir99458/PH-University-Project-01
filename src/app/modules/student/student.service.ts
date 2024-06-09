@@ -72,7 +72,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 }
 
 const getSingleStudentsFromDB = async (id: string) => {
-  const result = await Student.findOne({ id })
+  const result = await Student.findById(id)
 
   return result
 }
@@ -96,8 +96,8 @@ const updateStudentsIntoDB = async (id: string, payload: Partial<TStudent>) => {
   // if(email){
   //   modifiedUpdateData[`ema`]
   // }
-  console.log(modifiedUpdateData)
-  const result = await Student.findOneAndUpdate({ id }, modifiedUpdateData, {
+  // console.log(modifiedUpdateData)
+  const result = await Student.findByIdAndUpdate(id, modifiedUpdateData, {
     new: true,
     runValidators: true,
   })
@@ -109,8 +109,8 @@ const deleteStudentFromDB = async (id: string) => {
 
   try {
     session.startTransaction()
-    const deleteStudent = await Student.findOneAndUpdate(
-      { id },
+    const deleteStudent = await Student.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { new: true, session },
     )
@@ -118,8 +118,10 @@ const deleteStudentFromDB = async (id: string) => {
       throw new AppError(httpStatus.BAD_REQUEST, 'Unable to delete Student')
     }
 
-    const deleteUser = await User.findOneAndUpdate(
-      { id },
+    // get delete user
+    const userId = deleteStudent.user
+    const deleteUser = await User.findByIdAndUpdate(
+      userId,
       { isDeleted: true },
       { new: true, session },
     )
