@@ -17,7 +17,7 @@ const createCourse = catchAync(async (req, res) => {
 })
 
 const getAllCourses = catchAync(async (req, res) => {
-  const result = await CourseServices.getAllCoursesFromDB()
+  const result = await CourseServices.getAllCoursesFromDB(req.query)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -39,25 +39,23 @@ const getSingleCourses = catchAync(async (req, res) => {
   })
 })
 
-// const updateAcademicFaculty = catchAync(async (req, res) => {
-//   const { facultyId } = req.params
+const updateCourses = catchAync(async (req, res) => {
+  const { id } = req.params
 
-//   const result = await AcademicFacultyServices.updateAcademicFacultyIntoDB(
-//     facultyId,
-//     req.body,
-//   )
+  const result = await CourseServices.updateCourseIntoDB(id, req.body)
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Academic Faculty is updated successfully',
-//     data: result,
-//   })
-// })
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Course is updated successfully',
+    data: result,
+  })
+})
+
 const deleteCourses = catchAync(async (req, res) => {
   const { id } = req.params
 
-  const result = await CourseServices.deleteCourseIntoDB(id)
+  const result = await CourseServices.deleteCourseFromDB(id)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -72,4 +70,5 @@ export const CoursesControllers = {
   getAllCourses,
   getSingleCourses,
   deleteCourses,
+  updateCourses,
 }
