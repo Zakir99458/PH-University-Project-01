@@ -65,10 +65,28 @@ const deleteCourses = catchAync(async (req, res) => {
   })
 })
 
+const assignFacultiesWithCourse = catchAync(async (req, res) => {
+  const { courseId } = req.params
+  const { faculties } = req.body
+
+  const result = await CourseServices.assignFacultiesWithCourseIntoDB(
+    courseId,
+    faculties,
+  )
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'The course is deleted successfully',
+    data: result,
+  })
+})
+
 export const CoursesControllers = {
   createCourse,
   getAllCourses,
   getSingleCourses,
   deleteCourses,
   updateCourses,
+  assignFacultiesWithCourse,
 }
