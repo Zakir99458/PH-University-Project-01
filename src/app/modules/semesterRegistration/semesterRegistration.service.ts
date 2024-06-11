@@ -78,14 +78,20 @@ const updateSemesterRegistrationIntoDB = async (
     throw new AppError(httpStatus.NOT_FOUND, `This semester is not found`)
   }
   // if the requested semester is ended, we will not update anything
-  //   const requestedSemester = await SemesterRegistration.findById(id)
-  const semesterRegistrationStatus = isSemesterRegistrationExists
-  if (semesterRegistrationStatus?.status === 'ENDED') {
+  const currentSemesterRegistrationStatus = isSemesterRegistrationExists
+
+  if (currentSemesterRegistrationStatus?.status === 'ENDED') {
     throw new AppError(
       httpStatus.BAD_REQUEST,
-      `This semester is already ${semesterRegistrationStatus.status}`,
+      `This semester is already ${currentSemesterRegistrationStatus.status}`,
     )
   }
+
+  const result = await SemesterRegistration.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  })
+  return result
 }
 
 export const SemesterRegistrationService = {
