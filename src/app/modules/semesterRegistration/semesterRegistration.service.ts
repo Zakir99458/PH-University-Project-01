@@ -3,11 +3,26 @@ import AppError from '../../errors/AppErrors'
 import { AcademicSemester } from '../academicSemester/academiSemester.model'
 import { TSemesterRegistration } from './semesterRegistration.interface'
 import { SemesterRegistration } from './semesterRegistration.model'
+import QueryBuilder from '../../builder/QueryBuilder'
 
 const createSemesterRegistrationIntoDB = async (
   payload: TSemesterRegistration,
 ) => {
   const academicSemester = payload?.academicSemester
+
+  //   check if there any ongoing or upcoming registration
+  const isThereAnyUpcomingOrOngoingSemester =
+    await SemesterRegistration.findOne({
+      $or: [{ status: 'ONGOING' }, { status: 'UPCOMING' }],
+    })
+
+  if (isThereAnyUpcomingOrOngoingSemester) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `theris already ${isThereAnyUpcomingOrOngoingSemester.status}`,
+    )
+  }
+
   // Check if the Semster is already registered
   const isSemesterRegistrationExists = await SemesterRegistration.findOne({
     academicSemester,
@@ -31,11 +46,47 @@ const createSemesterRegistrationIntoDB = async (
   return result
 }
 
-const getAllSemesterRegistrationFromDB = async () => {}
+const getAllSemesterRegistrationFromDB = async (
+  query: Record<string, unknown>,
+) => {
+  const semesterRegistrationQuery = new QueryBuilder(
+    SemesterRegistration.find().populate('academicSemester'),
+    query,
+  )
+    .filter()
+    .sort()
+    .paginate()
+    .fields()
 
-const getSingleSemesterRegistrationFromDB = async () => {}
+  const result = semesterRegistrationQuery.modelQuery
+  return result
+}
 
-const updateSemesterRegistrationIntoDB = async () => {}
+const getSingleSemesterRegistrationFromDB = async (id: string) => {
+  const result = SemesterRegistration.findById(id)
+
+  return result
+}
+
+const updateSemesterRegistrationIntoDB = async (
+  id: string,
+  payload: Partial<TSemesterRegistration>,
+) => {
+  // if the requested semester is exist
+  const isSemesterRegistrationExists = await SemesterRegistration.findById(id)
+  if (!isSemesterRegistrationExists) {
+    throw new AppError(httpStatus.NOT_FOUND, `This semester is not found`)
+  }
+  // if the requested semester is ended, we will not update anything
+  //   const requestedSemester = await SemesterRegistration.findById(id)
+  const semesterRegistrationStatus = isSemesterRegistrationExists
+  if (semesterRegistrationStatus?.status === 'ENDED') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `This semester is already ${semesterRegistrationStatus.status}`,
+    )
+  }
+}
 
 export const SemesterRegistrationService = {
   createSemesterRegistrationIntoDB,

@@ -13,16 +13,16 @@ router.post(
   SemesterRegistrationControllers.createSemesterRegistration,
 )
 
-// router.get('/', AcademicFacultyControllers.getAllAcademicFaculty)
+router.get('/', SemesterRegistrationControllers.getAllSemesterRegistrations)
 
-// router.get('/:facultyId', AcademicFacultyControllers.getSingleAcademicFaculty)
+router.get('/:id', SemesterRegistrationControllers.getSinglSemesterRegistration)
 
-// router.patch(
-//   '/:facultyId',
-//   validateRequest(
-//     AcademicFacultyValidation.updateAcademicFacultyValidationSchema,
-//   ),
-//   AcademicFacultyControllers.updateAcademicFaculty,
-// )
+router.patch(
+  '/:id',
+  validateRequest(
+    SemesterRegistrationValidation.updateSemesterRegistrationValidationSchema,
+  ),
+  SemesterRegistrationControllers.updateSemesterRegistration,
+)
 
 export const SemesterRegistrationRoutes = router

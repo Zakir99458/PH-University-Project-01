@@ -21,7 +21,9 @@ const getAllSemesterRegistrations = catchAync(async (req, res) => {
   //   const { password, student: studentData } = req.body
 
   const result =
-    await SemesterRegistrationService.createSemesterRegistrationIntoDB(req.body)
+    await SemesterRegistrationService.getAllSemesterRegistrationFromDB(
+      req.query,
+    )
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -32,10 +34,10 @@ const getAllSemesterRegistrations = catchAync(async (req, res) => {
 })
 
 const getSinglSemesterRegistration = catchAync(async (req, res) => {
-  //   const { password, student: studentData } = req.body
+  const { id } = req.params
 
   const result =
-    await SemesterRegistrationService.createSemesterRegistrationIntoDB(req.body)
+    await SemesterRegistrationService.getSingleSemesterRegistrationFromDB(id)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -46,10 +48,12 @@ const getSinglSemesterRegistration = catchAync(async (req, res) => {
 })
 
 const updateSemesterRegistration = catchAync(async (req, res) => {
-  //   const { password, student: studentData } = req.body
-
+  const { id } = req.params
   const result =
-    await SemesterRegistrationService.createSemesterRegistrationIntoDB(req.body)
+    await SemesterRegistrationService.updateSemesterRegistrationIntoDB(
+      id,
+      req.body,
+    )
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
