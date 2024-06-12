@@ -32,13 +32,14 @@ const loginUser = async (payload: TLoginUser) => {
   if (!isPasswordMatched) {
     throw new AppError(httpStatus.NOT_FOUND, 'Password does not match')
   }
-  console.log(isPasswordMatched)
+
   //   Access granted
   //   create token and send to client
   const jwtPayload = {
-    userId: isUserExist, //isUserExist contains the whole USER information
+    userId: isUserExist.id, //isUserExist contains the whole USER information
     role: isUserExist.role,
   }
+  //   console.log('jwtPayload', jwtPayload)
   const accessToken = jwt.sign(
     {
       jwtPayload,
