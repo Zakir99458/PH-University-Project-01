@@ -4,8 +4,9 @@ import AppError from '../errors/AppErrors'
 import httpStatus from 'http-status'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import config from '../config'
+import { TUseRole } from '../modules/user/user.interface'
 
-const auth = () => {
+const auth = (...requireRoles: TUseRole[]) => {
   return catchAync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization
     // console.log(token)
@@ -27,7 +28,9 @@ const auth = () => {
           )
         }
         // decoded undefined
-        req.user = decoded as JwtPayload
+        const role = (decoded as JwtPayload)?.role
+        if (requireRoles && !requireRoles.includes(role))
+          req.user = decoded as JwtPayload
         next()
         // console.log('decoded:', decoded)
       },
