@@ -2,8 +2,14 @@
 import httpStatus from 'http-status'
 import mongoose from 'mongoose'
 import config from '../../config'
+
+import { TAdmin } from '../Admin/admin.interface'
+import { Admin } from '../Admin/admin.model'
+
+import { AcademicDepartment } from '../academicDepartment/academicDepartment.model'
 import { TStudent } from '../student/student.interface'
 import { Student } from '../student/student.model'
+
 import { TUser } from './user.interface'
 import { User } from './user.model'
 import {
@@ -11,12 +17,10 @@ import {
   generateFacultyId,
   generateStudentId,
 } from './user.utils'
-import AppError from '../../errors/AppErrors'
 import { AcademicSemester } from '../academicSemester/academiSemester.model'
-import { AcademicDepartment } from '../academicDepartment/academicDepartment.model'
+import AppError from '../../errors/AppErrors'
 import { TFaculty } from '../faculty/faculty.interface'
 import { Faculty } from '../faculty/faculty.model'
-import { Admin } from '../Admin/admin.model'
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // create a user object
@@ -32,6 +36,10 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   const admissionSemester = await AcademicSemester.findById(
     payload.admissionSemester,
   )
+
+  if (!admissionSemester) {
+    throw new AppError(400, 'Admission semester not found')
+  }
 
   const session = await mongoose.startSession()
 
@@ -126,7 +134,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   }
 }
 
-const createAdminIntoDB = async (password: string, payload: TFaculty) => {
+const createAdminIntoDB = async (password: string, payload: TAdmin) => {
   // create a user object
   const userData: Partial<TUser> = {}
 
