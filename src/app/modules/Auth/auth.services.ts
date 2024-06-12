@@ -3,6 +3,8 @@ import AppError from '../../errors/AppErrors'
 import { User } from '../user/user.model'
 import { TLoginUser } from './auth.interface'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import config from '../../config'
 
 const loginUser = async (payload: TLoginUser) => {
   // check if the user already exist
@@ -32,7 +34,23 @@ const loginUser = async (payload: TLoginUser) => {
   }
   console.log(isPasswordMatched)
   //   Access granted
-  return {}
+  //   create token and send to client
+  const jwtPayload = {
+    userId: isUserExist, //isUserExist contains the whole USER information
+    role: isUserExist.role,
+  }
+  const accessToken = jwt.sign(
+    {
+      jwtPayload,
+    },
+    config.jwt_access_secret as string,
+    { expiresIn: '10d' },
+  )
+
+  return {
+    accessToken,
+    needsToChangePassword: isUserExist?.needsToChangePassword,
+  }
 }
 
 export const AuthServices = {
