@@ -27,7 +27,7 @@ const moduleRoutes = [
   },
   {
     path: '/admins',
-    route: AdminRoutes,
+    route: UserRoute,
   },
   {
     path: '/faculties',
