@@ -13,10 +13,14 @@ const userSchema = new Schema<TUser>(
     password: {
       type: String,
       required: true,
+      // select: 0, // it will not allow to send password to the client side
     },
     needsToChangePassword: {
       type: Boolean,
       default: true,
+    },
+    passwordChangedAt: {
+      type: Date,
     },
     role: {
       type: String,

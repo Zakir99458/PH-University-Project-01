@@ -3,7 +3,7 @@ import AppError from '../../errors/AppErrors'
 import { User } from '../user/user.model'
 import { TLoginUser } from './auth.interface'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import config from '../../config'
 
 const loginUser = async (payload: TLoginUser) => {
@@ -54,6 +54,44 @@ const loginUser = async (payload: TLoginUser) => {
   }
 }
 
+const changePassword = async (
+  user: JwtPayload,
+  payload: { oldPassword: string; newPassword: string },
+) => {
+  // check for the existing password matched with with the user Given password
+
+  const hashedPasswordFromDB = await User.findOne({
+    id: user.jwtPayload.userId,
+  }).select('password')
+  const hashedPassword = hashedPasswordFromDB?.password
+  const isOldPasswordMatched = await bcrypt.compare(
+    payload.oldPassword,
+    hashedPassword as string,
+  )
+  if (!isOldPasswordMatched) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Old password does not match !')
+  }
+  const newHashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_round),
+  )
+  console.log(user)
+  const result = await User.findOneAndUpdate(
+    {
+      id: user.jwtPayload.userId,
+      role: user.jwtPayload.role,
+    },
+    {
+      password: newHashedPassword,
+      needsToChangePassword: false,
+      passwordChangedAt: new Date(),
+    },
+  )
+  console.log(newHashedPassword)
+  return result
+}
+
 export const AuthServices = {
   loginUser,
+  changePassword,
 }

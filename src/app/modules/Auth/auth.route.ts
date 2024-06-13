@@ -2,6 +2,8 @@ import express from 'express'
 import validateRequest from '../../middlewares/validateRequest'
 import { AuthValidation } from './auth.validation'
 import { AuthControllers } from './auth.controllers'
+import auth from '../../middlewares/auth'
+import { USER_ROLE } from '../user/user.constant'
 
 const authRouter = express.Router()
 
@@ -11,6 +13,12 @@ authRouter.post(
   AuthControllers.loginUser,
 )
 
+authRouter.post(
+  '/change-password',
+  auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  validateRequest(AuthValidation.changePasswordValidationSchema),
+  AuthControllers.changePassword,
+)
 export const AuthRoutes = {
   authRouter,
 }

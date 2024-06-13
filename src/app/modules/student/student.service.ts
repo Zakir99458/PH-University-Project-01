@@ -5,62 +5,61 @@ import httpStatus from 'http-status'
 import { User } from '../user/user.model'
 import { TStudent } from './student.interface'
 import QueryBuilder from '../../builder/QueryBuilder'
-import { studentSearchableFields } from './student.constant'
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   // console.log('Base-Query', query)
-  // // {'name.firstName':{$regex:query.searchTerm, $options:1}}
-  // const studentSearchableFields = ['email', 'name.firstName', 'presentAddress']
+  // {'name.firstName':{$regex:query.searchTerm, $options:1}}
+  const studentSearchableFields = ['email', 'name.firstName', 'presentAddress']
 
-  // let searchTerm = ''
-  // const queryObj = { ...query }
-  // const excludeObj = ['searchTerm', 'sort', 'limit', 'page', 'fields']
-  // excludeObj.forEach((el) => delete queryObj[el])
+  let searchTerm = ''
+  const queryObj = { ...query }
+  const excludeObj = ['searchTerm', 'sort', 'limit', 'page', 'fields']
+  excludeObj.forEach((el) => delete queryObj[el])
 
   // console.log('QueryObject', queryObj)
 
-  // if (query?.searchTerm) {
-  //   searchTerm = query?.searchTerm as string
-  // }
+  if (query?.searchTerm) {
+    searchTerm = query?.searchTerm as string
+  }
 
-  // const searchQuery = Student.find({
-  //   $or: studentSearchableFields.map((field) => ({
-  //     [field]: { $regex: searchTerm, $options: 'i' },
-  //   })),
-  // })
+  const searchQuery = Student.find({
+    $or: studentSearchableFields.map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
+  })
 
-  // const filterQuery = searchQuery.find(queryObj)
+  const filterQuery = searchQuery.find(queryObj)
 
-  // let sort = '-createdAt'
-  // if (query.sort) {
-  //   sort = query.sort as string
-  // }
-  // const sortQuery = filterQuery.sort(sort)
+  let sort = '-createdAt'
+  if (query.sort) {
+    sort = query.sort as string
+  }
+  const sortQuery = filterQuery.sort(sort)
 
-  // let page = 1
-  // let limit = 1
-  // let skip = 0
-  // if (query.limit) {
-  //   limit = Number(query.limit)
-  // }
-  // const limitQuery = sortQuery.limit(limit)
+  let page = 1
+  let limit = 1
+  let skip = 0
+  if (query.limit) {
+    limit = Number(query.limit)
+  }
+  const limitQuery = sortQuery.limit(limit)
 
-  // if (query.page) {
-  //   page = Number(query.page)
-  //   skip = (page - 1) * limit
-  // }
-  // const paginate = limitQuery.skip(skip)
+  if (query.page) {
+    page = Number(query.page)
+    skip = (page - 1) * limit
+  }
+  const paginate = limitQuery.skip(skip)
 
-  // let fields = '-__v'
+  let fields = '-__v'
 
-  // if (query.fields) {
-  //   fields = (query.fields as string).split(',').join(' ')
-  // }
-  // const fieldsQuery = await paginate.select(fields)
+  if (query.fields) {
+    fields = (query.fields as string).split(',').join(' ')
+  }
+  const fieldsQuery = await paginate.select(fields)
   // console.log('fieldsQuery:', fieldsQuery)
-  // return fieldsQuery
+  return fieldsQuery
 
-  const stduentQuery = new QueryBuilder(Student.find(), query)
+  const stduentQuery = new QueryBuilder(Student.find().populate('USER'), query)
     .search(studentSearchableFields)
     .filter()
     .sort()
