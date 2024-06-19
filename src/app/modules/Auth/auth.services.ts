@@ -5,6 +5,7 @@ import { TLoginUser } from './auth.interface'
 import bcrypt from 'bcrypt'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import config from '../../config'
+import { sendEmail } from '../../utils/sendEmail'
 
 const loginUser = async (payload: TLoginUser) => {
   // check if the user already exist
@@ -121,8 +122,10 @@ const forgetPassword = async (userId: string) => {
     config.jwt_access_secret as string,
     { expiresIn: '10m' },
   )
-  const resetUiLink = `http://localhost:5000/api/v1/id=${isUserExist.id}&token=${resetToken}`
+  const resetUiLink = `${config.reset_pass_ui_link}.?id=${isUserExist.id}&token=${resetToken}`
   console.log(resetUiLink)
+
+  sendEmail(isUserExist.email, resetUiLink)
 }
 
 export const AuthServices = {
