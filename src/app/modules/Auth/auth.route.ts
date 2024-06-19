@@ -19,6 +19,13 @@ authRouter.post(
   validateRequest(AuthValidation.changePasswordValidationSchema),
   AuthControllers.changePassword,
 )
+
+authRouter.post(
+  '/forget-password',
+  validateRequest(AuthValidation.forgetPasswordValidationSchema),
+  AuthControllers.forgetPassword,
+)
+
 export const AuthRoutes = {
   authRouter,
 }
