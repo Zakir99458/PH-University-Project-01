@@ -21,6 +21,8 @@ import { AcademicSemester } from '../academicSemester/academiSemester.model'
 import AppError from '../../errors/AppErrors'
 import { TFaculty } from '../faculty/faculty.interface'
 import { Faculty } from '../faculty/faculty.model'
+import { verifyToken } from '../Auth/auth.utils'
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary'
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // create a user object
@@ -48,6 +50,9 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     session.startTransaction()
     //set  generated id
     userData.id = await generateStudentId(admissionSemester)
+
+    // Send image to Cloudinary
+    sendImageToCloudinary()
 
     // create a user (transaction-1)
     const newUser = await User.create([userData], { session }) // array
@@ -182,8 +187,18 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
   }
 }
 
+const getMe = async (token: string) => {
+  const decoded = verifyToken(token, config.jwt_access_secret as string)
+  const { userId, role } = decoded
+  console.log(decoded)
+  // const result = await ()
+
+  return {}
+}
+
 export const UserServices = {
   createStudentIntoDB,
   createFacultyIntoDB,
   createAdminIntoDB,
+  getMe,
 }
