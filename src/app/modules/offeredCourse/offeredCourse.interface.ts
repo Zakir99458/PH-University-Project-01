@@ -8,7 +8,7 @@ export type TOfferedCourse = {
   academicFaculty: Types.ObjectId
   academicDepartment: Types.ObjectId
   course: Types.ObjectId
-  faculty: Types.ObjectId
+  // faculty: Types.ObjectId
   maxCapacity: number
   section: number
   days: TDays[]

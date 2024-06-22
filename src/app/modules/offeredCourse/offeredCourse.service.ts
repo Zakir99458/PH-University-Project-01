@@ -19,7 +19,7 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     academicDepartment,
     course,
     section,
-    faculty,
+    // faculty,
     days,
     startTime,
     endTime,
@@ -70,11 +70,11 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Course not found !')
   }
 
-  const isFacultyExits = await Faculty.findById(faculty)
+  // const isFacultyExits = await Faculty.findById(faculty)
 
-  if (!isFacultyExits) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found !')
-  }
+  // if (!isFacultyExits) {
+  //   throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found !')
+  // }
 
   // check if the department is belong to the  faculty
   const isDepartmentBelongToFaculty = await AcademicDepartment.findOne({
@@ -108,7 +108,7 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   // get the schedules of the faculties
   const assignedSchedules = await OfferedCourse.find({
     semesterRegistration,
-    faculty,
+    // faculty,
     days: { $in: days },
   }).select('days startTime endTime')
 
@@ -155,7 +155,7 @@ const getSingleOfferedCourseFromDB = async (id: string) => {
 
 const updateOfferedCourseIntoDB = async (
   id: string,
-  payload: Pick<TOfferedCourse, 'faculty' | 'days' | 'startTime' | 'endTime'>,
+  payload: Pick<TOfferedCourse, 'days' | 'startTime' | 'endTime'>,
 ) => {
   /**
    * Step 1: check if the offered course exists
@@ -164,7 +164,7 @@ const updateOfferedCourseIntoDB = async (
    * Step 4: check if the faculty is available at that time. If not then throw error
    * Step 5: update the offered course
    */
-  const { faculty, days, startTime, endTime } = payload
+  const { days, startTime, endTime } = payload
 
   const isOfferedCourseExists = await OfferedCourse.findById(id)
 
@@ -172,11 +172,11 @@ const updateOfferedCourseIntoDB = async (
     throw new AppError(httpStatus.NOT_FOUND, 'Offered course not found !')
   }
 
-  const isFacultyExists = await Faculty.findById(faculty)
+  // const isFacultyExists = await Faculty.findById(faculty)
 
-  if (!isFacultyExists) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found !')
-  }
+  // if (!isFacultyExists) {
+  //   throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found !')
+  // }
 
   const semesterRegistration = isOfferedCourseExists.semesterRegistration
   // get the schedules of the faculties
@@ -195,7 +195,7 @@ const updateOfferedCourseIntoDB = async (
   // check if the faculty is available at that time.
   const assignedSchedules = await OfferedCourse.find({
     semesterRegistration,
-    faculty,
+    // faculty,
     days: { $in: days },
   }).select('days startTime endTime')
 

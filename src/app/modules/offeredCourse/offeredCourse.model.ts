@@ -29,11 +29,11 @@ const offeredCourseSchema = new mongoose.Schema<TOfferedCourse>(
       required: true,
       ref: 'Course',
     },
-    faculty: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'Faculty',
-    },
+    // faculty: {
+    //   type: Schema.Types.ObjectId,
+    //   required: false,
+    //   ref: 'Faculty',
+    // },
     maxCapacity: {
       type: Number,
       required: true,
