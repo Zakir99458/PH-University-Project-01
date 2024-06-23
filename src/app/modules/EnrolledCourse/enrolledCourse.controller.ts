@@ -14,10 +14,26 @@ const createEnrolledCourse = catchAync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Student is enrolled successfully',
-    data: {},
+    data: result,
+  })
+})
+
+const updateEnrolledCourseMarks = catchAync(async (req, res) => {
+  const facultyId = req.user.userId
+  const result = await EnrolledCourseServices.updateEnrolledCourseMarksIntoDB(
+    facultyId,
+    req.body,
+  )
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Marks is updated succesfully',
+    data: result,
   })
 })
 
 export const EnrolledCourseControllers = {
   createEnrolledCourse,
+  updateEnrolledCourseMarks,
 }
